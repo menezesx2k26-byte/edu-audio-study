@@ -1,74 +1,147 @@
-# Gabriel Audio Study MVP
+# 🎧 Gabriel Audio Study
 
-PWA privada para transformar PDF ou texto em áudio com voz premium, sem você ficar caçando MP3.
+PWA privada para transformar PDFs e textos em áudio de estudo, com geração sob demanda, biblioteca local e fallback entre múltiplos provedores de TTS.
 
-## O que tem
+A ideia é simples: **abrir o material, gerar o áudio e estudar sem precisar gerenciar MP3 manualmente**.
 
-- Login simples com `APP_SECRET`.
-- Upload de PDF.
-- Texto colado.
-- Quebra automática em partes.
-- Geração de áudio sob demanda.
-- MP3 salvo de forma invisível em `server/storage/audio`.
-- Biblioteca + player: abrir material, dar play e continuar parte por parte.
-- Fallback automático de TTS: tenta provedores em ordem.
-- Suporte atual: Azure Speech, Amazon Polly, ElevenLabs, Google Cloud TTS e OpenAI TTS.
-- Dockerfile e `render.yaml` para deploy.
+## ✨ Funcionalidades
 
-## Estado atual recomendado
+- autenticação simples por `APP_SECRET`;
+- upload de PDF;
+- entrada por texto colado;
+- divisão automática em partes;
+- geração de áudio sob demanda;
+- armazenamento persistente no servidor;
+- biblioteca de materiais;
+- player integrado;
+- continuação automática entre partes;
+- fallback entre provedores de voz;
+- deploy via Docker/Render.
 
-O app está pensado para rodar assim:
+## 🧠 Pipeline de TTS
 
-```txt
-Azure Speech -> Amazon Polly Camila Generative -> ElevenLabs própria -> OpenAI opcional
+A ordem é configurável por variável de ambiente.
+
+Exemplo recomendado:
+
+```text
+Azure Speech
+   ↓
+Amazon Polly
+   ↓
+ElevenLabs
+   ↓
+OpenAI TTS
 ```
 
-No Render, o principal é preencher as variáveis abaixo. Não existe senha pronta no GitHub. O `APP_SECRET` é uma senha que você inventa no Render e depois usa para entrar no app.
+Google Cloud TTS também pode ser habilitado como provider opcional.
 
-## Variáveis do Render
+A aplicação ignora provedores sem credenciais válidas e tenta os próximos candidatos configurados.
 
-Obrigatórias para login e app:
+## 🔊 Provedores suportados
+
+- Microsoft Azure Speech;
+- Amazon Polly;
+- ElevenLabs;
+- OpenAI TTS;
+- Google Cloud Text-to-Speech.
+
+## 🧱 Arquitetura
+
+```text
+client/    PWA e player
+server/    API, autenticação, TTS e storage
+Dockerfile
+render.yaml
+```
+
+Em produção, o servidor Express entrega a API e também a build do cliente.
+
+## 🚀 Desenvolvimento local
+
+Instale cliente e servidor:
+
+```bash
+npm run install:all
+```
+
+Crie a configuração do backend:
+
+```bash
+cp server/.env.example server/.env
+```
+
+Inicie o servidor:
+
+```bash
+npm run dev:server
+```
+
+Em outro terminal:
+
+```bash
+npm run dev:client
+```
+
+Frontend padrão:
+
+```text
+http://localhost:5173
+```
+
+## 🔐 Autenticação
+
+A variável:
 
 ```env
-APP_SECRET=crie_uma_senha_sua_aqui
-CORS_ORIGIN=https://gabriel-audio-study.onrender.com
+APP_SECRET=uma_senha_privada
+```
+
+define a senha usada para entrar na aplicação.
+
+Não existe senha padrão no repositório.
+
+Se `APP_SECRET` não estiver configurado no ambiente de produção, o login não funcionará corretamente.
+
+## ⚙️ Variáveis principais
+
+### Aplicação
+
+```env
+APP_SECRET=
+CORS_ORIGIN=
 PORT=3001
 TTS_PROVIDER_ORDER=azure,polly,elevenlabs,openai
 ```
 
-Azure Speech, trator mais agradável:
+### Azure Speech
 
 ```env
-AZURE_SPEECH_KEYS=cole_a_chave_do_recurso_speech
+AZURE_SPEECH_KEYS=
 AZURE_SPEECH_REGIONS=brazilsouth
-AZURE_SPEECH_VOICES=pt-BR-FranciscaNeural,pt-BR-AntonioNeural,pt-BR-ThalitaNeural,pt-BR-YaraNeural
+AZURE_SPEECH_VOICES=pt-BR-FranciscaNeural,pt-BR-AntonioNeural
 AZURE_SPEECH_OUTPUT_FORMAT=audio-24khz-160kbitrate-mono-mp3
-AZURE_SPEECH_RATE=0%
-AZURE_SPEECH_PITCH=0%
 ```
 
-Amazon Polly, fallback estável:
+### Amazon Polly
 
 ```env
-AWS_POLLY_ACCESS_KEY_IDS=cole_o_access_key_id_do_iam
-AWS_POLLY_SECRET_ACCESS_KEYS=cole_o_secret_access_key_do_iam
+AWS_POLLY_ACCESS_KEY_IDS=
+AWS_POLLY_SECRET_ACCESS_KEYS=
 AWS_POLLY_REGIONS=us-east-1
 AWS_POLLY_VOICES=Camila
 AWS_POLLY_ENGINE=generative
-AWS_POLLY_OUTPUT_FORMAT=mp3
-AWS_POLLY_SAMPLE_RATE=24000
 ```
 
-ElevenLabs, fallback premium pontual:
+### ElevenLabs
 
 ```env
-ELEVENLABS_API_KEYS=cole_a_key_da_elevenlabs
-ELEVENLABS_VOICE_IDS=cole_o_voice_id_da_voz_propria
+ELEVENLABS_API_KEYS=
+ELEVENLABS_VOICE_IDS=
 ELEVENLABS_MODEL_ID=eleven_multilingual_v2
-ELEVENLABS_OUTPUT_FORMAT=mp3_44100_128
 ```
 
-OpenAI é opcional. Se não colocar chave, o app ignora:
+### OpenAI
 
 ```env
 OPENAI_API_KEYS=
@@ -76,106 +149,67 @@ TTS_MODEL=gpt-4o-mini-tts
 TTS_VOICE=marin
 ```
 
-Google Cloud TTS também é opcional e pode ficar fora enquanto exigir pré-autorização:
+### Google Cloud TTS
 
 ```env
 GOOGLE_TTS_CREDENTIALS_B64=
-GOOGLE_TTS_VOICES=pt-BR-Wavenet-A,pt-BR-Wavenet-B
 GOOGLE_TTS_LANGUAGE_CODE=pt-BR
 GOOGLE_TTS_AUDIO_ENCODING=MP3
-GOOGLE_TTS_SPEAKING_RATE=1
-GOOGLE_TTS_PITCH=0
 ```
 
-## Como funciona o login
+## ❤️ Health check
 
-Ao abrir o app, ele pede `APP_SECRET`.
+Depois do deploy:
 
-Se no Render você colocou:
-
-```env
-APP_SECRET=minha_senha_privada
+```text
+/health
 ```
 
-então a senha para entrar no app é:
+O endpoint informa o estado do serviço e a ordem efetiva de candidatos de TTS sem expor chaves privadas.
 
-```txt
-minha_senha_privada
-```
+## 💾 Persistência
 
-Se `APP_SECRET` não existir no Render, nenhuma senha funciona.
+Em Docker/produção, mantenha armazenamento persistente em:
 
-## Como funciona o fallback de voz
-
-Com:
-
-```env
-TTS_PROVIDER_ORDER=azure,polly,elevenlabs,openai
-AZURE_SPEECH_KEYS=preenchido
-AWS_POLLY_VOICES=Camila
-ELEVENLABS_API_KEYS=preenchido
-ELEVENLABS_VOICE_IDS=preenchido
-```
-
-A fila real fica parecida com:
-
-```txt
-azure#1.Francisca
-azure#1.Antonio
-azure#1.Thalita
-azure#1.Yara
-polly#1.Camila
-elevenlabs#1
-```
-
-Se Azure falhar por crédito, região, limite ou erro de API, ele tenta Polly. Se Polly falhar, tenta ElevenLabs. Se OpenAI estiver configurado, ela vira o próximo fallback.
-
-## Health check
-
-Depois do deploy, acesse:
-
-```txt
-https://gabriel-audio-study.onrender.com/health
-```
-
-O esperado é algo parecido com:
-
-```json
-{
-  "ok": true,
-  "service": "gabriel-audio-study",
-  "ttsProviderOrder": ["azure", "polly", "elevenlabs", "openai"],
-  "ttsCandidates": ["azure#1.Francisca", "polly#1.Camila", "elevenlabs#1"]
-}
-```
-
-## Rodar local
-
-```bash
-npm run install:all
-cp server/.env.example server/.env
-npm run dev:server
-npm run dev:client
-```
-
-Abra `http://localhost:5173` e entre com o valor de `APP_SECRET`.
-
-## Deploy
-
-Em produção, use Docker e disco persistente em:
-
-```txt
+```text
 /app/server/storage
 ```
 
-O Express serve API e também a PWA buildada em `client/dist`, então dá para hospedar tudo em um domínio só.
+Os áudios são gerenciados pela aplicação; não é necessário organizar arquivos manualmente.
 
-## Próximos upgrades
+## ☁️ Deploy
 
-- Gerar próximas partes em background.
-- Estimar custo antes de gerar livro inteiro.
-- Modo aula/resumo/revisão.
-- EPUB.
-- Cache por hash.
-- Banco Postgres/SQLite.
-- Cloudflare R2/S3 quando o acervo crescer.
+O repositório inclui:
+
+- `Dockerfile`;
+- `render.yaml`;
+- configuração para servir frontend e backend no mesmo domínio.
+
+Fluxo recomendado:
+
+```bash
+npm run build
+npm start
+```
+
+## 🔒 Segurança
+
+- nunca commitar API keys;
+- nunca commitar `APP_SECRET`;
+- manter credenciais somente no ambiente do servidor;
+- revisar CORS antes de expor o app;
+- tratar storage como conteúdo privado.
+
+## 🗺️ Evolução possível
+
+- geração antecipada das próximas partes;
+- estimativa de custo antes de lotes grandes;
+- modos aula/resumo/revisão;
+- suporte a EPUB;
+- cache por hash;
+- banco SQLite/Postgres;
+- object storage externo quando o acervo crescer.
+
+---
+
+**Status:** MVP funcional, multi-provider e pronto para evolução. 🎙️
