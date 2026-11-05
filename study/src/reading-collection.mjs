@@ -62,10 +62,19 @@ export async function writeReadingCollection(
   const names = ["reading.md", "reading.html"];
   if (pdf) {
     run("pandoc", [
-      "--from=gfm-raw_html", "--pdf-engine=xelatex",
-      "--variable", "papersize=a4", "--variable", "geometry:margin=18mm",
-      "--variable", "mainfont=DejaVu Serif", "--variable", "monofont=DejaVu Sans Mono",
-      "--output", join(directory, "reading.pdf"), md,
+      "--from=gfm-raw_html",
+      "--pdf-engine=xelatex",
+      "--variable",
+      "papersize=a4",
+      "--variable",
+      "geometry:margin=18mm",
+      "--variable",
+      "mainfont=DejaVu Serif",
+      "--variable",
+      "monofont=DejaVu Sans Mono",
+      "--output",
+      join(directory, "reading.pdf"),
+      md,
     ]);
     names.push("reading.pdf");
   }

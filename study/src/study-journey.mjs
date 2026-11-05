@@ -1,3 +1,4 @@
+import { readSections, exercises } from "./lesson-contract.mjs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import {
@@ -24,7 +25,14 @@ export function buildStudyJourney({ lesson, attempt = null, session = null }) {
     studyPacket = renderStudyPacket(lesson),
     readerText = renderAudio(lesson),
     answerKey = renderAnswerKey(lesson);
-  const turn = tutorTurn(lesson, attempt ?? { exerciseId: "AB1" }),
+  const turn = tutorTurn(
+      lesson,
+      attempt ?? {
+        exerciseId: exercises(
+          readSections(lesson.markdown).get("Armadilha A/B"),
+        )[0].id,
+      },
+    ),
     wrapup = tutorWrapup(lesson, [turn]);
   const csv =
     turn.phase === "feedback" && session

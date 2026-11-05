@@ -17,11 +17,17 @@ function checked(l) {
   return readSections(l.markdown);
 }
 const header = (l) =>
-  `# ${l.topic.id} — ${l.topic.title}\n\nEdição: ${l.metadata.edition}\nRevisão: ${l.metadata.updatedAt}\nSHA-256 editorial: ${lessonHash(l)}\n`;
+  `# ${l.topic.id} — ${l.topic.title}\n\nEdição: ${l.metadata.edition}  \nRevisão: ${l.metadata.updatedAt}  \nSHA-256 editorial:  \n\`${lessonHash(l)}\`\n`;
 const body = (sections, names) =>
   names
     .filter((n) => sections.has(n))
-    .map((n) => `## ${n}\n\n${sections.get(n)}`)
+    .map(
+      (n) =>
+        `## ${n}\n\n${sections
+          .get(n)
+          .replace(/\n(?=A\) )/g, "\n\n")
+          .replace(/^([A-E]\).+)$/gm, "$1  ")}`,
+    )
     .join("\n\n");
 export function renderReading(l) {
   const s = checked(l);
@@ -179,6 +185,20 @@ export async function verifyExportReceipt(directory) {
     const data = await readFile(join(directory, item.name));
     if (sha256(data) !== item.sha256 || data.length !== item.bytes)
       throw new Error(`integrity failure: ${item.name}`);
+  }
+  const citations = JSON.parse(
+    await readFile(join(directory, "citations.json"), "utf8"),
+  );
+  if (
+    !/^[a-f0-9]{64}$/.test(receipt.contentHash) ||
+    !/^(Por|Mat|Leg|Esp)\d{2}$/.test(receipt.topicId) ||
+    typeof receipt.edition !== "string" ||
+    !receipt.edition.trim() ||
+    ["topicId", "edition", "contentHash"].some(
+      (key) => receipt[key] !== citations[key],
+    )
+  ) {
+    throw new Error("receipt identity mismatch");
   }
   return receipt;
 }

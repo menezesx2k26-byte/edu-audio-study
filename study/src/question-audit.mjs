@@ -88,10 +88,14 @@ export function questionsFromSheet(rows) {
     throw new Error("missing or duplicate bank headers");
   return rows
     .slice(1)
-    .filter((row) => row[headers.indexOf("ID")])
-    .map((row) => {
+    .map((row, index) => ({ row, sourceRow: index + 2 }))
+    .filter(({ row }) =>
+      row.some((cell) => cell != null && String(cell).trim() !== ""),
+    )
+    .map(({ row, sourceRow }) => {
       const get = (h) => row[headers.indexOf(h)] ?? null;
       return {
+        sourceRow,
         id: get("ID"),
         subject: get("Disciplina"),
         topicId: get("Tópico edital"),
@@ -124,7 +128,13 @@ export function auditBank(questions, topicIds, reviews = []) {
       r.reasons.push("duplicate question ID");
       r.status = "hold";
     }
-    return { id: q.id, topicId: q.topicId, contentHash: questionHash(q), ...r };
+    return {
+      id: q.id,
+      topicId: q.topicId,
+      sourceRow: q.sourceRow ?? null,
+      contentHash: questionHash(q),
+      ...r,
+    };
   });
   const eligible = items.filter((i) => i.status === "eligible").length;
   return {

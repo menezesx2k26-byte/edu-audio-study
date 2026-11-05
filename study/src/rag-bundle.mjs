@@ -1,4 +1,7 @@
 import {
+  text,
+  validDate,
+  validUrl,
   isPublishableLesson,
   readSections,
   lessonHash,
@@ -127,6 +130,53 @@ export function verifyRagBundle(b) {
     !b.manifest.entries.length
   )
     throw new Error("invalid staging scope");
+  const isHash = (value) =>
+    typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+  if (
+    b.manifest.schemaVersion !== 1 ||
+    !validDate(b.manifest.generatedAt) ||
+    !Array.isArray(b.manifest.sourceRevision) ||
+    !b.manifest.sourceRevision.length ||
+    b.manifest.sourceRevision.some((revision) => !text(revision))
+  )
+    throw new Error("manifest provenance required");
+  for (const entry of b.manifest.entries) {
+    if (
+      !text(entry.topicId) ||
+      !text(entry.edition) ||
+      !text(entry.sourceRevision) ||
+      !isHash(entry.sourceHash) ||
+      !isHash(entry.contentHash) ||
+      !Array.isArray(entry.sourceRefs) ||
+      !entry.sourceRefs.length ||
+      new Set(entry.sourceRefs.map((r) => r?.id)).size !==
+        entry.sourceRefs.length ||
+      entry.sourceRefs.some(
+        (r) =>
+          !r ||
+          !text(r.id) ||
+          !validUrl(r.url) ||
+          !text(r.articleOrSection) ||
+          !text(r.revision) ||
+          !validDate(r.verifiedAt),
+      ) ||
+      !b.chunks.some((c) => c.topicId === entry.topicId)
+    )
+      throw new Error("entry provenance required");
+  }
+  for (const chunk of b.chunks) {
+    if (
+      !text(chunk.id) ||
+      !text(chunk.text) ||
+      !text(chunk.edition) ||
+      !text(chunk.section) ||
+      !isHash(chunk.hash) ||
+      !isHash(chunk.sourceHash) ||
+      !Array.isArray(chunk.sourceRefs) ||
+      !chunk.sourceRefs.length
+    )
+      throw new Error("chunk provenance required");
+  }
   if (
     new Set(b.chunks.map((c) => c.id)).size !== b.chunks.length ||
     new Set(b.manifest.entries.map((e) => e.topicId)).size !==
