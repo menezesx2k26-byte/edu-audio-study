@@ -1,0 +1,85 @@
+{
+  "status": "draft",
+  "edition": "0.1.0",
+  "updatedAt": "2026-11-05",
+  "reviewedBy": null,
+  "editorialReview": null,
+  "qualityNotes": "Texto autoral em rascunho; conferência automática e consulta de fontes não substituem revisão humana. Não publicável pelo gate.",
+  "sectionSources": {
+    "Teoria": [
+      "S1",
+      "S2",
+      "S3",
+      "S4"
+    ],
+    "Exemplos resolvidos": [
+      "S1",
+      "S2",
+      "S3",
+      "S4"
+    ],
+    "Distinções": [
+      "S2",
+      "S3",
+      "S4"
+    ],
+    "Gabarito comentado": [
+      "S1",
+      "S2",
+      "S3"
+    ]
+  },
+  "topicId": "Esp01",
+  "sourceRefs": [
+    {
+      "id": "S1",
+      "url": "https://legis.senado.leg.br/norma/579494/publicacao/16434817",
+      "articleOrSection": "CF arts. 2º, 5º e 37, caput",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": true,
+      "validity": "current",
+      "validityCheckedAt": "2026-11-05"
+    },
+    {
+      "id": "S2",
+      "url": "https://www2.camara.leg.br/legin/fed/declei/1960-1969/decreto-lei-200-25-fevereiro-1967-376033-normaatualizada-pe.html",
+      "articleOrSection": "DL 200/1967 arts. 4º, 5º, 10 e 19–26",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": true,
+      "validity": "current",
+      "validityCheckedAt": "2026-11-05"
+    },
+    {
+      "id": "S3",
+      "url": "https://www2.camara.leg.br/legin/fed/lei/1999/lei-9784-29-janeiro-1999-322239-normaatualizada-pl.html",
+      "articleOrSection": "Lei 9.784/1999 arts. 1º, 2º, 11–15, 50, 53 e 55",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": true,
+      "validity": "current",
+      "validityCheckedAt": "2026-11-05"
+    },
+    {
+      "id": "S4",
+      "url": "https://legis.senado.leg.br/norma/546570/publicacao/34620321",
+      "articleOrSection": "Lei 4.717/1965 art. 2º e parágrafo único",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": true,
+      "validity": "current",
+      "validityCheckedAt": "2026-11-05"
+    },
+    {
+      "id": "S5",
+      "url": "https://anexos-r2.selecao.net.br/uploads/342/concursos/581/anexos/6fba492d-76fe-4d27-b83f-32480d6f1c3b.pdf#page=36",
+      "articleOrSection": "Anexo IV p.36 Assistente Administrativo",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": false,
+      "validity": "not-applicable",
+      "validityCheckedAt": null
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "status": "draft",
+  "edition": "0.1.0",
+  "updatedAt": "2026-11-05",
+  "reviewedBy": null,
+  "editorialReview": null,
+  "qualityNotes": "Texto autoral em rascunho; conferência automática e consulta de fontes não substituem revisão humana. Não publicável pelo gate.",
+  "sectionSources": {
+    "Teoria": [
+      "S1"
+    ],
+    "Exemplos resolvidos": [
+      "S1"
+    ],
+    "Distinções": [
+      "S1"
+    ],
+    "Gabarito comentado": [
+      "S1"
+    ]
+  },
+  "topicId": "Por01",
+  "sourceRefs": [
+    {
+      "id": "S1",
+      "url": "https://sme.goiania.go.gov.br/conexaoescola/eaja/lingua-portuguesa-estrategias-de-leitura-antecipacao-e-inferencia/",
+      "articleOrSection": "Estratégias de leitura e verificação de hipóteses",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": false,
+      "validity": "not-applicable",
+      "validityCheckedAt": null
+    },
+    {
+      "id": "S2",
+      "url": "https://sme.goiania.go.gov.br/conexaoescola/ensino_fundamental/lingua-portuguesa-inferencias/",
+      "articleOrSection": "Inferências e pistas contextuais",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": false,
+      "validity": "not-applicable",
+      "validityCheckedAt": null
+    },
+    {
+      "id": "S3",
+      "url": "https://anexos-r2.selecao.net.br/uploads/342/concursos/581/anexos/6fba492d-76fe-4d27-b83f-32480d6f1c3b.pdf#page=36",
+      "articleOrSection": "Anexo IV p.36 Língua Portuguesa",
+      "revision": "Texto consultado em 2026-11-05; dispositivos indicados",
+      "verifiedAt": "2026-11-05",
+      "primary": false,
+      "validity": "not-applicable",
+      "validityCheckedAt": null
+    }
+  ]
+}
