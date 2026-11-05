@@ -1,0 +1,7 @@
+{
+ "topicId":"<ID>","status":"draft","edition":"0.1.0","updatedAt":"2026-11-05","reviewedBy":null,
+ "qualityNotes":"Rascunho; revisão humana pendente.",
+ "sourceRefs":[{"id":"S1","url":"","articleOrSection":"","revision":"","verifiedAt":null,"primary":false,"validity":"unconfirmed","validityCheckedAt":null}],
+ "sectionSources":{"Teoria":["S1"],"Exemplos resolvidos":["S1"],"Distinções":["S1"],"Gabarito comentado":["S1"]},
+ "editorialReview":null
+}
