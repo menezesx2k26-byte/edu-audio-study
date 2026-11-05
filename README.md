@@ -213,3 +213,14 @@ npm start
 ---
 
 **Status:** MVP funcional, multi-provider e pronto para evolução. 🎙️
+## Material Mestre — Operação 50/50
+
+O pipeline editorial fica em [study/](study/). O inventário tem 61 tópicos; o [fluxo e os limites de entrega](study/docs/study-journey-checklist.md) explicam revisão, leitura, tutoria, áudio textual, Sheets e RAG staging.
+
+- `npm run test:study`: verificações automatizadas, incluindo fixtures explicitamente sintéticas.
+- `npm run study:validate`: gate editorial; código 2 quando o acervo não pode ser publicado.
+- `npm run study:export -- Por01`: derivados somente após aprovação humana da revisão exata.
+- `npm run study:channels -- Por01`: pacote para professor, estudo e importação textual.
+- `npm run study:reading -- --topics Esp01,Por01 --pdf`: consolidação aprovada, com Pandoc/XeLaTeX locais.
+
+Esp01 e Por01 estão em rascunho; Leg03 aguarda fonte vigente verificável. Nenhum canal externo ou índice produtivo é declarado ativo por esses arquivos. Este pipeline não inicia TTS nem grava desempenho na planilha.

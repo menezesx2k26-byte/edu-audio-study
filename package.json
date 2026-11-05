@@ -11,6 +11,10 @@
     "start": "npm --prefix server start",
     "test:study": "node --test study/tests/*.test.mjs",
     "study:validate": "node study/scripts/validate-all.mjs",
-    "study:export": "node study/scripts/export-topic.mjs"
+    "study:export": "node study/scripts/export-topic.mjs",
+    "study:reading": "node study/scripts/export-reading.mjs",
+    "study:rag": "node study/scripts/export-rag-staging.mjs",
+    "study:channels": "node study/scripts/export-channels.mjs",
+    "study:session": "node study/scripts/export-session-csv.mjs"
   }
 }
