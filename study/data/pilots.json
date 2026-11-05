@@ -1,5 +1,17 @@
 [
- {"topicId":"Esp01","availability":"draft","reason":"Revisão humana pendente."},
- {"topicId":"Leg03","availability":"blocked","reason":"Texto vigente não recuperado integralmente: fonte consolidada HTTP 403; Câmara captcha/503; compêndio IPRESF de 2022 insuficiente para vigência em 2026."},
- {"topicId":"Por01","availability":"draft","reason":"Revisão humana pendente."}
+  {
+    "topicId": "Esp01",
+    "availability": "draft",
+    "reason": "Revisão humana pendente."
+  },
+  {
+    "topicId": "Leg03",
+    "availability": "blocked",
+    "reason": "Texto vigente não recuperado integralmente: fonte consolidada HTTP 403; Câmara captcha/503; compêndio IPRESF de 2022 insuficiente para vigência em 2026."
+  },
+  {
+    "topicId": "Por01",
+    "availability": "draft",
+    "reason": "Revisão humana pendente."
+  }
 ]

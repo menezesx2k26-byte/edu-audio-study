@@ -6,28 +6,10 @@
   "editorialReview": null,
   "qualityNotes": "Texto autoral em rascunho; conferência automática e consulta de fontes não substituem revisão humana. Não publicável pelo gate.",
   "sectionSources": {
-    "Teoria": [
-      "S1",
-      "S2",
-      "S3",
-      "S4"
-    ],
-    "Exemplos resolvidos": [
-      "S1",
-      "S2",
-      "S3",
-      "S4"
-    ],
-    "Distinções": [
-      "S2",
-      "S3",
-      "S4"
-    ],
-    "Gabarito comentado": [
-      "S1",
-      "S2",
-      "S3"
-    ]
+    "Teoria": ["S1", "S2", "S3", "S4"],
+    "Exemplos resolvidos": ["S1", "S2", "S3", "S4"],
+    "Distinções": ["S2", "S3", "S4"],
+    "Gabarito comentado": ["S1", "S2", "S3"]
   },
   "topicId": "Esp01",
   "sourceRefs": [

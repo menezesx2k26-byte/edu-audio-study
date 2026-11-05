@@ -1,10 +1,104 @@
-import test from 'node:test';import assert from 'node:assert/strict';
-import {validateStudySession,toExistingSheetRow,toListeningRow,sessionCsv} from '../src/session-record.mjs';
-const session=()=>({id:'SYNTHETIC-SESSION',date:'2026-11-05',subject:'Português',topicId:'Por01',activeMinutes:25,questions:5,correct:4,newQuestions:5,newCorrect:4,origin:'SFS2027',nature:'REAL',validation:'VÁLIDO'});
-test('test_sheet_row_matches_existing_12_headers',()=>{assert.deepEqual(toExistingSheetRow(session()),['SYNTHETIC-SESSION','2026-11-05','Português','Por01',25,5,4,5,4,'SFS2027','REAL','VÁLIDO']);});
-test('test_sheet_row_keeps_null_distinct_from_zero',()=>{const s=session();s.newQuestions=null;s.newCorrect=null;s.correct=0;const row=toExistingSheetRow(s);assert.equal(row[6],0);assert.equal(row[7],null);assert.match(sessionCsv(s),/,5,0,,,SFS2027/);});
-test('test_minutos_passivos_nao_somam_ativos',()=>{const s=session();s.passiveMinutes=30;assert.equal(validateStudySession(s).valid,false);assert.deepEqual(toListeningRow({id:'SYNTHETIC-LISTEN',date:'2026-11-05',tool:'Leitor',minutes:30,topicId:'Por01',validation:'DECLARADO'}),['SYNTHETIC-LISTEN','2026-11-05','Leitor',30,'Por01','DECLARADO']);});
-test('test_duplicate_session_id_rejected',()=>{assert.equal(validateStudySession(session(),new Set(['SYNTHETIC-SESSION'])).valid,false);});
-test('test_acertos_nao_excedem_questoes',()=>{for(const patch of [{correct:6},{newCorrect:5},{newQuestions:6},{questions:1.5},{activeMinutes:-1},{date:'2026-02-30'},{questions:null,correct:0},{subject:'Matemática'}]){assert.equal(validateStudySession({...session(),...patch}).valid,false,JSON.stringify(patch));}});
-test('unattempted session cannot claim observed results',()=>{const s=session();s.questions=null;s.correct=null;s.newQuestions=null;s.newCorrect=null;assert.equal(validateStudySession(s).valid,true);assert.equal(toExistingSheetRow(s)[5],null);});
-test('CSV quotes text and refuses formula injection',()=>{const s=session();s.origin='Aula, texto';assert.match(sessionCsv(s),/"Aula, texto"/);s.origin='=1+1';assert.throws(()=>sessionCsv(s));});
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  validateStudySession,
+  toExistingSheetRow,
+  toListeningRow,
+  sessionCsv,
+} from "../src/session-record.mjs";
+const session = () => ({
+  id: "SYNTHETIC-SESSION",
+  date: "2026-11-05",
+  subject: "Português",
+  topicId: "Por01",
+  activeMinutes: 25,
+  questions: 5,
+  correct: 4,
+  newQuestions: 5,
+  newCorrect: 4,
+  origin: "SFS2027",
+  nature: "REAL",
+  validation: "VÁLIDO",
+});
+test("test_sheet_row_matches_existing_12_headers", () => {
+  assert.deepEqual(toExistingSheetRow(session()), [
+    "SYNTHETIC-SESSION",
+    "2026-11-05",
+    "Português",
+    "Por01",
+    25,
+    5,
+    4,
+    5,
+    4,
+    "SFS2027",
+    "REAL",
+    "VÁLIDO",
+  ]);
+});
+test("test_sheet_row_keeps_null_distinct_from_zero", () => {
+  const s = session();
+  s.newQuestions = null;
+  s.newCorrect = null;
+  s.correct = 0;
+  const row = toExistingSheetRow(s);
+  assert.equal(row[6], 0);
+  assert.equal(row[7], null);
+  assert.match(sessionCsv(s), /,5,0,,,SFS2027/);
+});
+test("test_minutos_passivos_nao_somam_ativos", () => {
+  const s = session();
+  s.passiveMinutes = 30;
+  assert.equal(validateStudySession(s).valid, false);
+  assert.deepEqual(
+    toListeningRow({
+      id: "SYNTHETIC-LISTEN",
+      date: "2026-11-05",
+      tool: "Leitor",
+      minutes: 30,
+      topicId: "Por01",
+      validation: "DECLARADO",
+    }),
+    ["SYNTHETIC-LISTEN", "2026-11-05", "Leitor", 30, "Por01", "DECLARADO"],
+  );
+});
+test("test_duplicate_session_id_rejected", () => {
+  assert.equal(
+    validateStudySession(session(), new Set(["SYNTHETIC-SESSION"])).valid,
+    false,
+  );
+});
+test("test_acertos_nao_excedem_questoes", () => {
+  for (const patch of [
+    { correct: 6 },
+    { newCorrect: 5 },
+    { newQuestions: 6 },
+    { questions: 1.5 },
+    { activeMinutes: -1 },
+    { date: "2026-02-30" },
+    { questions: null, correct: 0 },
+    { subject: "Matemática" },
+  ]) {
+    assert.equal(
+      validateStudySession({ ...session(), ...patch }).valid,
+      false,
+      JSON.stringify(patch),
+    );
+  }
+});
+test("unattempted session cannot claim observed results", () => {
+  const s = session();
+  s.questions = null;
+  s.correct = null;
+  s.newQuestions = null;
+  s.newCorrect = null;
+  assert.equal(validateStudySession(s).valid, true);
+  assert.equal(toExistingSheetRow(s)[5], null);
+});
+test("CSV quotes text and refuses formula injection", () => {
+  const s = session();
+  s.origin = "Aula, texto";
+  assert.match(sessionCsv(s), /"Aula, texto"/);
+  s.origin = "=1+1";
+  assert.throws(() => sessionCsv(s));
+});

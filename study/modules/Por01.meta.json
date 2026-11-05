@@ -6,18 +6,10 @@
   "editorialReview": null,
   "qualityNotes": "Texto autoral em rascunho; conferência automática e consulta de fontes não substituem revisão humana. Não publicável pelo gate.",
   "sectionSources": {
-    "Teoria": [
-      "S1"
-    ],
-    "Exemplos resolvidos": [
-      "S1"
-    ],
-    "Distinções": [
-      "S1"
-    ],
-    "Gabarito comentado": [
-      "S1"
-    ]
+    "Teoria": ["S1"],
+    "Exemplos resolvidos": ["S1"],
+    "Distinções": ["S1"],
+    "Gabarito comentado": ["S1"]
   },
   "topicId": "Por01",
   "sourceRefs": [

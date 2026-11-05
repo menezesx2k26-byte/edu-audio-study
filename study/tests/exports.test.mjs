@@ -1,7 +1,86 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,readdir,readFile,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
-import {renderReading,renderStudyPacket,renderAudio,renderNotebookSources,renderCitationIndex,renderAnswerKey,writeTopicExport} from '../src/exports.mjs';import {fixtureLesson} from './helpers/fixtures.mjs';import {lessonHash} from '../src/lesson-contract.mjs';
-test('test_study_packet_contains_no_answer_key',()=>{const l=fixtureLesson();const s=renderStudyPacket(l);assert.match(s,/### Q1/);assert.match(s,/### AB1/);assert.doesNotMatch(s,/SENTINELA_GABARITO_TESTE|Gabarito comentado|Correta:|Rival:/);assert.match(renderAnswerKey(l),/SENTINELA_GABARITO_TESTE/);});
-test('test_audio_has_no_raw_markdown_tables_or_urls',()=>{const l=fixtureLesson();l.markdown=l.markdown.replace('Texto de referência [S1].','Texto de referência [S1].\n\n| Nome | Valor |\n| --- | --- |\n| Item | Dez |\n[Uma fonte](https://example.org/source)');l.metadata.editorialReview.contentHash=lessonHash(l);const s=renderAudio(l);assert.doesNotMatch(s,/https?:\/\/|\||\*\*|^#/m);assert.match(s,/Item/);assert.doesNotMatch(s,/SENTINELA_GABARITO_TESTE/);});
-test('test_exports_are_deterministic_and_versioned',()=>{const l=fixtureLesson();assert.equal(renderReading(l),renderReading(l));const c=renderCitationIndex(l);assert.equal(c.topicId,'Por01');assert.equal(c.edition,'fixture-v1');assert.match(c.contentHash,/^[a-f0-9]{64}$/);assert.match(renderNotebookSources(l),/https:\/\/example.org\/source/);assert.match(renderReading(l),/Gabarito comentado/);});
-test('test_exports_reject_stale_legal_source',()=>{const l=fixtureLesson('Leg03');l.metadata.sourceRefs[0].validity='superseded';for(const render of [renderReading,renderStudyPacket,renderAudio,renderNotebookSources,renderCitationIndex,renderAnswerKey])assert.throws(()=>render(l));});
-test('draft export creates no directory and approved export has verifiable artifacts',async()=>{const dir=await mkdtemp(join(tmpdir(),'study-export-'));try{const l=fixtureLesson();l.metadata.status='draft';await assert.rejects(writeTopicExport(l,dir));assert.deepEqual(await readdir(dir),[]);l.metadata.status='verified';const out=await writeTopicExport(l,dir);assert.equal((await readdir(out.directory)).length,7);assert.match(await readFile(join(out.directory,'study-packet.md'),'utf8'),/### Q1/);assert.equal(JSON.parse(await readFile(join(out.directory,'receipt.json'))).artifacts.length,6);assert.deepEqual(await writeTopicExport(l,dir),out);}finally{await rm(dir,{recursive:true,force:true});}});
+import test from "node:test";
+import assert from "node:assert/strict";
+import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import {
+  renderReading,
+  renderStudyPacket,
+  renderAudio,
+  renderNotebookSources,
+  renderCitationIndex,
+  renderAnswerKey,
+  writeTopicExport,
+} from "../src/exports.mjs";
+import { fixtureLesson } from "./helpers/fixtures.mjs";
+import { lessonHash } from "../src/lesson-contract.mjs";
+test("test_study_packet_contains_no_answer_key", () => {
+  const l = fixtureLesson();
+  const s = renderStudyPacket(l);
+  assert.match(s, /### Q1/);
+  assert.match(s, /### AB1/);
+  assert.doesNotMatch(
+    s,
+    /SENTINELA_GABARITO_TESTE|Gabarito comentado|Correta:|Rival:/,
+  );
+  assert.match(renderAnswerKey(l), /SENTINELA_GABARITO_TESTE/);
+});
+test("test_audio_has_no_raw_markdown_tables_or_urls", () => {
+  const l = fixtureLesson();
+  l.markdown = l.markdown.replace(
+    "Texto de referência [S1].",
+    "Texto de referência [S1].\n\n| Nome | Valor |\n| --- | --- |\n| Item | Dez |\n[Uma fonte](https://example.org/source)",
+  );
+  l.metadata.editorialReview.contentHash = lessonHash(l);
+  const s = renderAudio(l);
+  assert.doesNotMatch(s, /https?:\/\/|\||\*\*|^#/m);
+  assert.match(s, /Item/);
+  assert.doesNotMatch(s, /SENTINELA_GABARITO_TESTE/);
+});
+test("test_exports_are_deterministic_and_versioned", () => {
+  const l = fixtureLesson();
+  assert.equal(renderReading(l), renderReading(l));
+  const c = renderCitationIndex(l);
+  assert.equal(c.topicId, "Por01");
+  assert.equal(c.edition, "fixture-v1");
+  assert.match(c.contentHash, /^[a-f0-9]{64}$/);
+  assert.match(renderNotebookSources(l), /https:\/\/example.org\/source/);
+  assert.match(renderReading(l), /Gabarito comentado/);
+});
+test("test_exports_reject_stale_legal_source", () => {
+  const l = fixtureLesson("Leg03");
+  l.metadata.sourceRefs[0].validity = "superseded";
+  for (const render of [
+    renderReading,
+    renderStudyPacket,
+    renderAudio,
+    renderNotebookSources,
+    renderCitationIndex,
+    renderAnswerKey,
+  ])
+    assert.throws(() => render(l));
+});
+test("draft export creates no directory and approved export has verifiable artifacts", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "study-export-"));
+  try {
+    const l = fixtureLesson();
+    l.metadata.status = "draft";
+    await assert.rejects(writeTopicExport(l, dir));
+    assert.deepEqual(await readdir(dir), []);
+    l.metadata.status = "verified";
+    const out = await writeTopicExport(l, dir);
+    assert.equal((await readdir(out.directory)).length, 7);
+    assert.match(
+      await readFile(join(out.directory, "study-packet.md"), "utf8"),
+      /### Q1/,
+    );
+    assert.equal(
+      JSON.parse(await readFile(join(out.directory, "receipt.json"))).artifacts
+        .length,
+      6,
+    );
+    assert.deepEqual(await writeTopicExport(l, dir), out);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+});
