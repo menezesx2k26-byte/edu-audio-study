@@ -9,6 +9,7 @@
     "dev:client": "npm --prefix client run dev",
     "build": "npm --prefix client run build",
     "start": "npm --prefix server start",
-    "test:study": "node --test study/tests/*.test.mjs"
+    "test:study": "node --test study/tests/*.test.mjs",
+    "study:validate": "node study/scripts/validate-all.mjs"
   }
 }
