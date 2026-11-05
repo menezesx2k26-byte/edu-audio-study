@@ -5,3 +5,6 @@ server/storage/audio/*.mp3
 server/storage/uploads/*
 client/dist/
 .DS_Store
+.superpowers/
+study/dist/
+study/private/
